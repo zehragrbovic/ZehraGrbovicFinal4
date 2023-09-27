@@ -181,9 +181,25 @@
 
     <div>
       Dropdown list of regions in selected country:
-      <select id = "regionsDropdown"  onchange = "selectOption2()">
+      <select id = "regionsDropdown"  onchange = "selectRegion()">
         
      </select>
+    </div>
+
+
+    <div>
+      <table id="locations", class="display", style="width: 100%;">
+        <thead>
+          <tr>
+            <th>City</th>
+            <th>City Count</th>
+            <th>Code</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+      </table>
     </div>
 
   </body>
@@ -259,22 +275,68 @@
       })
     }
     
-    function selectOption2() {
-      var selectedValue = dropdown.options[dropdown.selectedIndex].text;
-      console.log(selectedValue);
+    function selectRegion() {
+      var selectedRegion = regionsDropdown.options[regionsDropdown.selectedIndex].text;
+      console.log(selectedRegion);
+ 
 
-      
+      /*TODO #4
+      * Use jQuery Datatable library to create HTML table with id = locations
+      * This table will list only unique cities from the region selected in select dropdown:
+      * together with total number of occurrences of that city available in file and
+      * country code
+      * -> unique means that one city appears only once
+      * 24 points
+      */
+
+      $.getJSON("IP2LOCATION.json", function(data) { 
+
+        const cities = [];
+        var cityCount = [];
+        var countryCode = [];
+        for(let i = 0; i < data.length; i++) {
+
+          if(selectedRegion == data[i].Region) {
+            if(!cities.includes(data[i].City)) {
+              cities.push(data[i].City);
+              countryCode.push(data[i].code);
+              cityCount[cities.indexOf(data[i].City)] = 1;
+            }
+            else {
+              cityCount[cities.indexOf(data[i].City)] += 1;
+            }
+          }       
+
+        }
+        console.log(cities);
+
+        const tableData = [];
+        for(let i = 0; i < cities.length; i++) {
+          let temp = [cities[i], cityCount[i], countryCode[i]];
+          tableData.push(temp);
+        }
+        console.log(tableData);
+
+
+        //datatable
+        $('#locations').DataTable( {
+        data: tableData,
+        paging: true,
+        searching: true,
+        ordering: true,
+        columns: [
+          { title: "City" },
+          { title: "Count" },
+          { title: "Code" }
+        ],
+        "pageLength": 10,
+        "lengthMenu":  [2, 5, 10, 25, 50, "All"]
+      })
+
+      })
+
     }
-     
-
-    /*TODO #4
-     * Use jQuery Datatable library to create HTML table with id = locations
-     * This table will list only unique cities from the region selected in select dropdown:
-     * together with total number of occurrences of that city available in file and
-     * country code
-     * -> unique means that one city appears only once
-     * 24 points
-     */
+    
 
     /*TODO #5
      * Create pie chart that shows distribution of how many countries starts with letters A, B, C and D
