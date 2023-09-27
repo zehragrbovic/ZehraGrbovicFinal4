@@ -171,6 +171,14 @@
       </div>
       <div></div>
     </div>
+
+    <div>
+      Dropdown list of unique countries:
+      <select id = "dropdown"  onchange = "selectOption()">
+        //options
+     </select>
+    </div>
+
   </body>
 
   <script>
@@ -183,14 +191,39 @@
 
       console.log(data);
 
-    })
-
-    /*TODO #2
+      /*TODO #2
      * Create select dropdown and load unique countries from file within it
      * -> unique means that one country appears only once
      * You can use select2 library if you want
      * 24 points
      */
+
+     //get a list of unique countries
+     const countries = [];
+      for(let i = 0; i < data.length; i++) {
+
+        if(!countries.includes(data[i].Country)) {
+          countries.push(data[i].Country);
+        }
+
+      }
+      console.log(countries);
+
+      //dropdown
+      const select = $("#dropdown");
+      for (let i = 0; i < countries.length; i++) {
+        let option = `<option value="${countries[i]}">${countries[i]}</option>`;
+        select.append(option);
+      } 
+
+    })
+
+    function selectOption() {
+      var selectedValue = dropdown.options[dropdown.selectedIndex].text;
+      console.log(selectedValue);
+
+    }
+    
 
      /*TODO #3
       * Create select dropdown and load unique regions from file within that dropdown for the country SELECTED in country dropdown
