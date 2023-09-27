@@ -175,7 +175,14 @@
     <div>
       Dropdown list of unique countries:
       <select id = "dropdown"  onchange = "selectOption()">
-        //options
+        
+     </select>
+    </div>
+
+    <div>
+      Dropdown list of regions in selected country:
+      <select id = "regionsDropdown"  onchange = "selectOption2()">
+        
      </select>
     </div>
 
@@ -222,15 +229,43 @@
       var selectedValue = dropdown.options[dropdown.selectedIndex].text;
       console.log(selectedValue);
 
-    }
-    
-
-     /*TODO #3
+      /*TODO #3
       * Create select dropdown and load unique regions from file within that dropdown for the country SELECTED in country dropdown
       * -> unique means that one regions appears only once
       * You can use select2 library if you want
       * 24 points
       */
+
+      $.getJSON("IP2LOCATION.json", function(data) { 
+        const regions = [];
+        for(let i = 0; i < data.length; i++) {
+
+          if(selectedValue == data[i].Country) {
+            if(!regions.includes(data[i].Region)) {
+              regions.push(data[i].Region);
+            }       
+
+          }
+        }
+        console.log(regions);
+
+        //dropdown
+        const select = $("#regionsDropdown");
+        for (let i = 0; i < regions.length; i++) {
+          let option = `<option value="${regions[i]}">${regions[i]}</option>`;
+          select.append(option);
+        } 
+
+      })
+    }
+    
+    function selectOption2() {
+      var selectedValue = dropdown.options[dropdown.selectedIndex].text;
+      console.log(selectedValue);
+
+      
+    }
+     
 
     /*TODO #4
      * Use jQuery Datatable library to create HTML table with id = locations
